@@ -19,6 +19,7 @@ void node_print(node_t *self);
 list_t* list_create();
 void list_print(list_t *self);
 void list_push(list_t *self, int *value);
+int* list_pop(list_t *self);
 
 
 node_t* create_node(int *value) {
@@ -47,6 +48,8 @@ list_t* list_create() {
     new_list->head = NULL;
     new_list->tail = NULL;
     new_list->length = 0;
+
+    return new_list;
 }
 
 void list_print(list_t *self) {
@@ -86,14 +89,46 @@ void node_print(node_t *self) {
     printf("\n}\n");
 }
 
+int* list_pop(list_t *self) {
+    if (self->length == 0) {
+        return NULL;
+    }
+    if (self->length == 1) {
+        self->head = NULL;
+        self->tail = NULL;
+    }
+
+    node_t *node = self->tail;
+    self->tail = node->prev;
+    self->tail->next = NULL;
+    int *value = node->value;
+    self->length -= 1;
+
+    free(node);
+
+    return value;
+}
+
 
 int main() {
-    int value = 16;
+    int v1, v2, v3, v4;
+    v1 = 16;
+    v2 = 14;
+    v3 = 18;
+    v4 = 21;
     list_t *linked_list = list_create();
-    node_t *no1 = create_node(&value);
+    node_t *no1 = create_node(&v1);
     node_print(no1);
 
-    list_push(linked_list, &value);
+    list_push(linked_list, &v1);
+    list_push(linked_list, &v2);
+    list_push(linked_list, &v3);
+    list_push(linked_list, &v4);
     list_print(linked_list);
+
+    printf("\n-->POP[%d]\n\n", *(list_pop(linked_list)));
+
+    list_print(linked_list);
+
     return 0;
 }
